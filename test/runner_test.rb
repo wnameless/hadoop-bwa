@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'hadoop/bwa/errors'
 
-class InstanceTest < Test::Unit::TestCase
+class RunnerTest < Test::Unit::TestCase
   HADOOP_HOME = File.join File.dirname(__FILE__), 'hadoop'
   include Hadoop::Bwa::Errors
   

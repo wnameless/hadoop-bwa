@@ -6,34 +6,34 @@ class ArgsParserTest < Test::Unit::TestCase
   include Hadoop::Bwa::Errors
   
   def test_parse
-    assert_equal ['test.1'], parse('index test.1')
-    assert_equal ['test.1', 'test.2'], parse('mem test.1 test.2')
-    assert_equal ['test.1', 'test.2', 'test.3'], parse('mem test.1 test.2 test.3')
-    assert_equal ['test.1', 'test.2'], parse('aln test.1 test.2')
-    assert_equal ['test.1', 'test.2'], parse('samse test.1 test.2')
-    assert_equal ['test.1', 'test.2', 'test.3', 'test.4', 'test.5'], parse('sampe test.1 test.2 test.3 test.4 test.5')
-    assert_equal ['test.1', 'test.2'], parse('bwasw test.1 test.2')
+    assert_equal ['test.1'], parse_args('index test.1')
+    assert_equal ['test.1', 'test.2'], parse_args('mem test.1 test.2')
+    assert_equal ['test.1', 'test.2', 'test.3'], parse_args('mem test.1 test.2 test.3')
+    assert_equal ['test.1', 'test.2'], parse_args('aln test.1 test.2')
+    assert_equal ['test.1', 'test.2'], parse_args('samse test.1 test.2')
+    assert_equal ['test.1', 'test.2', 'test.3', 'test.4', 'test.5'], parse_args('sampe test.1 test.2 test.3 test.4 test.5')
+    assert_equal ['test.1', 'test.2'], parse_args('bwasw test.1 test.2')
   end
   
   def test_flag
-    assert_equal ['test.1'], parse('index -a -C sf test.1')
-    assert_equal ['test.1', 'test.2'], parse('mem -g -C sf test.1 test.2')
-    assert_equal ['test.1', 'test.2', 'test.3'], parse('mem -g -C sf test.1 test.2 test.3')
-    assert_equal ['test.1', 'test.2'], parse('aln -g -C sf test.1 test.2')
-    assert_equal ['test.1', 'test.2'], parse('samse -g -C sf test.1 test.2')
-    assert_equal ['test.1', 'test.2', 'test.3', 'test.4', 'test.5'], parse('sampe -g -C sf test.1 test.2 test.3 test.4 test.5')
-    assert_equal ['test.1', 'test.2'], parse('bwasw -g -C sf test.1 test.2')
+    assert_equal ['test.1'], parse_args('index -a -C sf test.1')
+    assert_equal ['test.1', 'test.2'], parse_args('mem -g -C sf test.1 test.2')
+    assert_equal ['test.1', 'test.2', 'test.3'], parse_args('mem -g -C sf test.1 test.2 test.3')
+    assert_equal ['test.1', 'test.2'], parse_args('aln -g -C sf test.1 test.2')
+    assert_equal ['test.1', 'test.2'], parse_args('samse -g -C sf test.1 test.2')
+    assert_equal ['test.1', 'test.2', 'test.3', 'test.4', 'test.5'], parse_args('sampe -g -C sf test.1 test.2 test.3 test.4 test.5')
+    assert_equal ['test.1', 'test.2'], parse_args('bwasw -g -C sf test.1 test.2')
   end
   
   def test_parse_error_1
     assert_raise InvalidCommandError do
-      parse('nope')
+      parse_args('nope')
     end
   end
   
   def test_parse_error_2
     assert_raise RequiredFilesMissingError do
-      parse('index')
+      parse_args('index')
     end
   end
 end

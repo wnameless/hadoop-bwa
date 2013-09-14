@@ -7,7 +7,7 @@ module Hadoop::Bwa
     CMD_FORMAT = { index: [1],   mem: [2, 3],   aln: [2],
                    samse: [2], sampe: [5],    bwasw: [2] }.with_indifferent_access
     
-    def parse(cmd)
+    def parse_args(cmd)
       args = cmd.strip.split(/\s+/)
       files = args.slice_before { |co| co =~ /^-/ }.to_a.last.delete_if { |co| co =~ /^-/ }
       cmd = args.first
