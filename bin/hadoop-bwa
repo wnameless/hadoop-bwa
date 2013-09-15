@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'hadoop/bwa'
+
+hadoop_bwa = Hadoop::Bwa.new
+
+hadoop_bwa.run ARGV
