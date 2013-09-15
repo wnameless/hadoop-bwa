@@ -31,7 +31,7 @@ class RunnerTest < Test::Unit::TestCase
       "-files hdfs://127.0.0.1:54310/user/test.fa " <<
       "-input hdfs://127.0.0.1:54310/user/hadoop-bwa-streaming-input.txt " <<
       "-output \"/user/hadoop/hadoop-bwa-index #{Time.now.to_s.split(/\s+/).first(2).join ' '}\" " <<
-      "-mapper \"/usr/local/bin/bwa index\" "<<
+      "-mapper \"/usr/local/bin/bwa index\" " <<
       "-reducer NONE"
       
     assert_equal expect, @runner.streaming_statement('index', '/user/hadoop', ['test.fa'])
