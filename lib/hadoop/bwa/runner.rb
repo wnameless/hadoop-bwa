@@ -1,3 +1,4 @@
+require 'active_support/core_ext/hash'
 require 'hadoop/bwa/streaming_configurator'
 require 'hadoop/bwa/args_parser'
 require 'hadoop/bwa/hdfs_uploader'
@@ -6,6 +7,8 @@ require 'uri'
 
 module Hadoop::Bwa
   class Runner
+    BWA_PREREQUISITE = { index: [],   mem: [], aln: ['bwt', 'rbwt'],
+                         samse: [], sampe: [], bwasw: [] }.with_indifferent_access
     include StreamingConfigurator
     include ArgsParser
     include Errors
@@ -43,7 +46,8 @@ module Hadoop::Bwa
       when 'mem'
         raise NotSupportedError, 'mem not supported yet.'
       when 'aln'
-        @uploader.upload_files local, hdfs, files
+        cmd = files.first
+        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE[cmd].map { |ext| "#{cmd}.#{ext}" }
         `#{streaming_statement cmd, hdfs, files}`
       when 'samse'
         raise NotSupportedError, 'aln not supported yet.'
