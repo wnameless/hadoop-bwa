@@ -8,5 +8,6 @@ module Hadoop::Bwa
     class InvalidCommandError < Exception ; end
     class RequiredFilesMissingError < Exception ; end
     class HdfsFileUploadingError < Exception ; end
+    class NotSupportedError < Exception ; end
   end
 end

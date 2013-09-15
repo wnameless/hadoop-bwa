@@ -2,6 +2,7 @@ require 'hadoop/bwa/streaming_configurator'
 require 'hadoop/bwa/args_parser'
 require 'hadoop/bwa/hdfs_uploader'
 require 'hadoop/bwa/errors'
+require 'uri'
 
 module Hadoop::Bwa
   class Runner
@@ -40,13 +41,28 @@ module Hadoop::Bwa
         exts = %w(amb ann bwt pac rbwt rpac rsa sa)
         @uploader.upload_files local, hdfs, exts.map { |ext| "#{files[0]}.#{ext}" }
       when 'mem'
+        raise NotSupportedError, 'mem not supported yet.'
       when 'aln'
+        @uploader.upload_files local, hdfs, files
+        `#{streaming_statement cmd, hdfs, files}`
       when 'samse'
+        raise NotSupportedError, 'aln not supported yet.'
       when 'sampe'
+        raise NotSupportedError, 'sampe not supported yet.'
       when 'bwasw'
+        raise NotSupportedError, 'bwasw not supported yet.'
       else
         raise InvalidCommandError, "Invalid command: #{cmd.split(/\s+/)[0]}."
       end
+    end
+    
+    def streaming_statement cmd, hdfs, files
+      "#{@hadoop_cmd} jar #{@streaming_jar} " <<
+      "-files #{files.map { |f| "#{URI.join @fs_default_name, hdfs, f}" }.join ','} " <<
+      "-input #{URI.join @fs_default_name, hdfs, 'hadoop-bwa-streaming-input.txt'} " <<
+      "-output \"#{File.join hdfs, cmd.split(/\s+/)[0] + Time.now.to_s.split(/\s+/).first(2).join(' ')}\"" <<
+      "-mapper \"#{@bwa} #{cmd}\"" <<
+      "-reducer NONE"
     end
     
     def which cmd
