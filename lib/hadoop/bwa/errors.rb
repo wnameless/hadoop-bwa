@@ -7,5 +7,6 @@ module Hadoop::Bwa
     class StreamingJarNotFoundError < Exception ; end
     class InvalidCommandError < Exception ; end
     class RequiredFilesMissingError < Exception ; end
+    class HdfsFileUploadingError < Exception ; end
   end
 end
