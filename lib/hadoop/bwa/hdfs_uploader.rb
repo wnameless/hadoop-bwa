@@ -23,7 +23,7 @@ module Hadoop::Bwa
     
     def upload_hdfs hdfs, files
       files.each do |f|
-        `#{@hadoop_cmd} fs -put #{f} #{File.join hdfs, File.basename(f)}`
+        system "#{@hadoop_cmd} fs -put #{f} #{File.join hdfs, File.basename(f)}"
       end
     end
     

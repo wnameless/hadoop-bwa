@@ -29,10 +29,19 @@ module Hadoop::Bwa
     
     def run cmd, opts = {}
       local = opts[:local] || '.'
-      hdfs = opts[:hdfs] || "user/#{`who am i`.split(/\s+/)[0]}"
+      hdfs = opts[:hdfs] || "/user/#{`who am i`.split(/\s+/)[0]}"
       files = parse_args cmd
       @uploader.upload_files local, hdfs, files
       streaming cmd, local, hdfs, files
+    end
+    
+    def streaming_statement cmd, hdfs, files
+      "#{@hadoop_cmd} jar #{@streaming_jar} " <<
+      "-files #{files.map { |f| "#{URI.join @fs_default_name, hdfs, f}" }.join ','} " <<
+      "-input #{URI.join @fs_default_name, hdfs, 'hadoop-bwa-streaming-input.txt'} " <<
+      "-output \"#{File.join hdfs, 'hadoop-bwa-' + cmd.split(/\s+/)[0] + ' ' + Time.now.to_s.split(/\s+/).first(2).join(' ')}\" " <<
+      "-mapper \"#{@bwa} #{cmd}\" " <<
+      "-reducer NONE"
     end
     
     private
@@ -48,7 +57,7 @@ module Hadoop::Bwa
       when 'aln'
         cmd = files.first
         @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE[cmd].map { |ext| "#{cmd}.#{ext}" }
-        `#{streaming_statement cmd, hdfs, files}`
+        system "#{streaming_statement cmd, hdfs, files}"
       when 'samse'
         raise NotSupportedError, 'aln not supported yet.'
       when 'sampe'
@@ -58,15 +67,6 @@ module Hadoop::Bwa
       else
         raise InvalidCommandError, "Invalid command: #{cmd.split(/\s+/)[0]}."
       end
-    end
-    
-    def streaming_statement cmd, hdfs, files
-      "#{@hadoop_cmd} jar #{@streaming_jar} " <<
-      "-files #{files.map { |f| "#{URI.join @fs_default_name, hdfs, f}" }.join ','} " <<
-      "-input #{URI.join @fs_default_name, hdfs, 'hadoop-bwa-streaming-input.txt'} " <<
-      "-output \"#{File.join hdfs, cmd.split(/\s+/)[0] + Time.now.to_s.split(/\s+/).first(2).join(' ')}\"" <<
-      "-mapper \"#{@bwa} #{cmd}\"" <<
-      "-reducer NONE"
     end
     
     def which cmd
