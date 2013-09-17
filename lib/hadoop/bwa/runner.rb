@@ -17,11 +17,13 @@ module Hadoop::Bwa
     def initialize opts = {}
       opts = opts.with_indifferent_access
       @hadoop_home = opts[:hadoop_home] || ENV['HADOOP_HOME'] ||
-        raise(HadoopNotFoundError, 'Hadoop home not found. ' <<
+        raise(HadoopNotFoundError,
+          'Hadoop home not found. ' <<
           'Please set system variable HADOOP_HOME or ' <<
           'passing :hadoop_home => path_to_hadoop_home.')
       @bwa = opts[:bwa] || which('bwa') ||
-        raise(BWANotFoundError, 'BWA not found. ' <<
+        raise(BWANotFoundError,
+          'BWA not found. ' <<
           'Please install BWA first or passing :bwa => path_to_bwa.')
       @hadoop_cmd, @fs_default_name, @streaming_jar = config_streaming @hadoop_home
       @uploader = HdfsUploader.new @hadoop_cmd

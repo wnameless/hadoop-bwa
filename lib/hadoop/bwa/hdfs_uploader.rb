@@ -13,7 +13,8 @@ module Hadoop::Bwa
       remote_files = ls_remote(hdfs).map { |f| File.basename f }
       unuploaded_files = files - remote_files
       if (unuploaded_files - local_files).any?
-        raise HdfsFileUploadingError, "Files: #{unuploaded_files - local_files} " <<
+        raise HdfsFileUploadingError,
+          "Files: #{unuploaded_files - local_files} " <<
           "can't be found on either local or hdfs."
       end
       upload_hdfs unuploaded_files.map { |f| File.join local, f }
