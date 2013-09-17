@@ -6,7 +6,7 @@ require 'hadoop/bwa/version'
 Gem::Specification.new do |spec|
   spec.name          = "hadoop-bwa"
   spec.version       = Hadoop::Bwa::VERSION
-  spec.authors       = ["Wei-Ming Wu", "linhanjen"]
+  spec.authors       = ["Wei-Ming Wu", "Han-Jen Lin"]
   spec.email         = ["wnameless@gmail.com", "linhanjen@gmail.com"]
   spec.description   = %q{BWA for Hadoop Streaming}
   spec.summary       = %q{BWA for Hadoop Streaming}
