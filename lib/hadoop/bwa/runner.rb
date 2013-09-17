@@ -61,7 +61,7 @@ module Hadoop::Bwa
       "#{@hadoop_cmd} jar #{@streaming_jar} " <<
       "-files #{files.map { |f| "#{File.join @fs_default_name, hdfs, f}" }.join ','} " <<
       "-input #{File.join @fs_default_name, hdfs, 'hadoop-bwa-streaming-input.txt'} " <<
-      "-output \"#{File.join hdfs, 'hadoop-bwa-' + cmd.split(/\s+/)[0] + ' ' + Time.now.to_s.split(/\s+/).first(2).join(' ')}\" " <<
+      "-output \"#{File.join hdfs, 'hadoop-bwa-' + cmd.split(/\s+/)[0] + '_' + Time.now.to_s.split(/\s+/).first(2).join.chars.keep_if { |c| c=~ /\d/ }.join}\" " <<
       "-mapper \"#{@bwa} #{cmd}\" " <<
       "-reducer NONE"
     end
