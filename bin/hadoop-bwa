@@ -4,4 +4,4 @@ require 'hadoop/bwa'
 
 hadoop_bwa = Hadoop::Bwa.new
 
-hadoop_bwa.run ARGV
+hadoop_bwa.run ARGV.join(' ')
