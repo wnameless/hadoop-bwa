@@ -46,7 +46,8 @@ module Hadoop::Bwa
     # @option [String] :hdfs the folder where HDFS files should be found
     def run cmd, opts = {}
       local = opts[:local] || '.'
-      hdfs = opts[:hdfs] || "/user/#{`who am i`.split(/\s+/)[0]}"
+      hdfs = opts[:hdfs] || "/user/#{ENV['USER']}"
+      system "#{@hadoop_cmd} fs -touchz #{File.join hdfs, 'hadoop-bwa-streaming-input.txt'}"
       files = parse_args cmd
       @uploader.upload_files local, hdfs, files
       streaming cmd, local, hdfs, files
@@ -77,8 +78,7 @@ module Hadoop::Bwa
       when 'mem'
         raise NotSupportedError, 'mem not supported yet.'
       when 'aln'
-        tgt = files.first
-        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['aln'].map { |ext| "#{tgt}.#{ext}" }
+        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['aln'].map { |ext| "#{files[0]}.#{ext}" }
         system "#{streaming_statement cmd, hdfs, files}"
       when 'samse'
         raise NotSupportedError, 'aln not supported yet.'
