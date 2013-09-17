@@ -27,7 +27,7 @@ module Hadoop::Bwa
           "Files: #{unuploaded_files - local_files} " <<
           "can't be found on either local or hdfs."
       end
-      upload_hdfs unuploaded_files.map { |f| File.join local, f }
+      upload_hdfs hdfs, unuploaded_files.map { |f| File.join local, f }
     end
     
     private
