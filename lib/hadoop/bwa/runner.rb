@@ -77,8 +77,7 @@ module Hadoop::Bwa
       when 'mem'
         raise NotSupportedError, 'mem not supported yet.'
       when 'aln'
-        cmd = files.first
-        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE[cmd].map { |ext| "#{cmd}.#{ext}" }
+        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['aln'].map { |ext| "#{cmd}.#{ext}" }
         system "#{streaming_statement cmd, hdfs, files}"
       when 'samse'
         raise NotSupportedError, 'aln not supported yet.'
