@@ -40,7 +40,7 @@ module Hadoop::Bwa
     
     def ls_remote hdfs
       result = `#{@hadoop_cmd} fs -ls #{hdfs}`
-      result.drop(1).map { |line| line.split(/ /).slice_before(/^\//).to_a.last.join(' ') }
+      result.split("\n").drop(1).map { |line| line.split(/ /).slice_before(/^\//).to_a.last.join(' ') }
     end
   end  
 end
