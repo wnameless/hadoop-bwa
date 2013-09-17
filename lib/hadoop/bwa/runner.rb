@@ -3,7 +3,6 @@ require 'hadoop/bwa/streaming_configurator'
 require 'hadoop/bwa/args_parser'
 require 'hadoop/bwa/hdfs_uploader'
 require 'hadoop/bwa/errors'
-require 'uri'
 
 module Hadoop::Bwa
   # Runner is used to run BWA commands on Hadoop Streaming.
@@ -60,8 +59,8 @@ module Hadoop::Bwa
     # @param [Array] files an Array contains all names of required files
     def streaming_statement cmd, hdfs, files
       "#{@hadoop_cmd} jar #{@streaming_jar} " <<
-      "-files #{files.map { |f| "#{URI.join @fs_default_name, hdfs, f}" }.join ','} " <<
-      "-input #{URI.join @fs_default_name, hdfs, 'hadoop-bwa-streaming-input.txt'} " <<
+      "-files #{files.map { |f| "#{File.join @fs_default_name, hdfs, f}" }.join ','} " <<
+      "-input #{File.join @fs_default_name, hdfs, 'hadoop-bwa-streaming-input.txt'} " <<
       "-output \"#{File.join hdfs, 'hadoop-bwa-' + cmd.split(/\s+/)[0] + ' ' + Time.now.to_s.split(/\s+/).first(2).join(' ')}\" " <<
       "-mapper \"#{@bwa} #{cmd}\" " <<
       "-reducer NONE"
