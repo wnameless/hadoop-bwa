@@ -6,7 +6,10 @@ require 'hadoop/bwa/errors'
 require 'uri'
 
 module Hadoop::Bwa
+  # Runner is used to run BWA commands on Hadoop Streaming.
+  # @author Wei-Ming Wu
   class Runner
+    # BWA_PREREQUISITE defines necessary files for BWA commands.
     BWA_PREREQUISITE = { index: [],   mem: [], aln: ['bwt', 'rbwt'],
                          samse: [], sampe: [], bwasw: [] }.with_indifferent_access
     include StreamingConfigurator
@@ -14,6 +17,12 @@ module Hadoop::Bwa
     include Errors
     attr_reader :hadoop_home, :bwa, :hadoop_cmd, :fs_default_name, :streaming_jar
     
+    # Creates a Runner.
+    #
+    # @param [Hash] opts the options of this Runner
+    # @option [String] :hadoop_home the location of Hadoop home
+    # @option [String] :bwa the location of BWA command
+    # @return [Runner] a Runner object
     def initialize opts = {}
       opts = opts.with_indifferent_access
       @hadoop_home = opts[:hadoop_home] || ENV['HADOOP_HOME'] ||
@@ -29,6 +38,12 @@ module Hadoop::Bwa
       @uploader = HdfsUploader.new @hadoop_cmd
     end
     
+    # Runs a BWA command.
+    #
+    # @param [String] cmd a BWA command
+    # @param [Hash] opts the options of method `run`
+    # @option [String] :local the folder where local files located
+    # @option [String] :hdfs the folder where HDFS files should be found
     def run cmd, opts = {}
       local = opts[:local] || '.'
       hdfs = opts[:hdfs] || "/user/#{`who am i`.split(/\s+/)[0]}"
@@ -37,6 +52,11 @@ module Hadoop::Bwa
       streaming cmd, local, hdfs, files
     end
     
+    # Creates a Hadoop Streaming statement.
+    #
+    # @param [String] cmd a BWA command
+    # @param [String] hdfs the folder where HDFS files should be found
+    # @param [Array] files an Array contains all names of required files
     def streaming_statement cmd, hdfs, files
       "#{@hadoop_cmd} jar #{@streaming_jar} " <<
       "-files #{files.map { |f| "#{URI.join @fs_default_name, hdfs, f}" }.join ','} " <<

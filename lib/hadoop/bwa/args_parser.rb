@@ -2,11 +2,17 @@ require 'active_support/core_ext/hash'
 require 'hadoop/bwa/errors'
 
 module Hadoop::Bwa
+  # ArgsParser is used to parse BWA command arguments.
+  # @author Wei-Ming Wu
   module ArgsParser
-    include Errors
+    # CMD_FORMAT defines the number of required files for each BWA command.
     CMD_FORMAT = { index: [1],   mem: [2, 3],   aln: [2],
                    samse: [2], sampe: [5],    bwasw: [2] }.with_indifferent_access
+    include Errors
     
+    # Returns required files for a BWA command after parsing arguments.
+    #
+    # @return [Array] an Array of required files
     def parse_args(cmd)
       args = cmd.strip.split(/\s+/)
       files = args.slice_before { |co| co =~ /^-/ }.to_a.last.delete_if { |co| co =~ /^-/ }

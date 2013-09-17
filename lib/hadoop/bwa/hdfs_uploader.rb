@@ -1,13 +1,23 @@
 require 'hadoop/bwa/errors'
 
 module Hadoop::Bwa
+  # HdfsUploader uploads files from local to HDFS.
+  # @author Wei-Ming Wu
   class HdfsUploader
     include Errors
     
+    # Creates a HdfsUploader.
+    #
+    # @param [String] hadoop_cmd the path of Hadoop command
     def initialize hadoop_cmd
       @hadoop_cmd = hadoop_cmd
     end
     
+    # Uploads files from local to HDFS.
+    #
+    # @param [String] local where local files are located
+    # @param [String] hdfs where files should be uploaded to HDFS
+    # @param [Array] files specified files to be uploaded
     def upload_files local, hdfs, files
       local_files = Dir[File.join local, '*'].map { |f| File.basename f }
       remote_files = ls_remote(hdfs).map { |f| File.basename f }

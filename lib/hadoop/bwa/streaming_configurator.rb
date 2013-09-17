@@ -1,9 +1,14 @@
 require 'hadoop/bwa/errors'
 
 module Hadoop::Bwa
+  # StreamingConfigurator setups necessary variables for Hadoop Streaming.
+  # @author Wei-Ming Wu
   module StreamingConfigurator
     include Errors
     
+    # Finds out necessary variables by given path of Hadoop home.
+    #
+    # @return [Array] an Array contains the locations of Hadoop command, file system default name and Hadoop Streaming jar
     def config_streaming hadoop_home
       hadoop_cmd = find_hadoop_cmd hadoop_home
       fs_default_name = find_fs_default_name hadoop_home
