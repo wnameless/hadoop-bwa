@@ -87,16 +87,20 @@ module Hadoop::Bwa
       when 'mem'
         raise NotSupportedError, 'mem not supported yet.'
       when 'aln'
-        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['aln'].map { |ext| "#{files[0]}.#{ext}" }
+        files = files + BWA_PREREQUISITE['aln'].map { |ext| "#{files[0]}.#{ext}" }
+        @uploader.upload_files local, hdfs, files
         system "#{streaming_statement cmd, hdfs, files}"
       when 'samse'
-        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['samse'].map { |ext| "#{files[0]}.#{ext}" }
+        files = files + BWA_PREREQUISITE['samse'].map { |ext| "#{files[0]}.#{ext}" }
+        @uploader.upload_files local, hdfs, files
         system "#{streaming_statement cmd, hdfs, files}"
       when 'sampe'
-        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['sampe'].map { |ext| "#{files[0]}.#{ext}" }
+        files = files + BWA_PREREQUISITE['sampe'].map { |ext| "#{files[0]}.#{ext}" }
+        @uploader.upload_files local, hdfs, files
         system "#{streaming_statement cmd, hdfs, files}"
       when 'bwasw'
-        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['bwasw'].map { |ext| "#{files[0]}.#{ext}" }
+        files = files + BWA_PREREQUISITE['bwasw'].map { |ext| "#{files[0]}.#{ext}" }
+        @uploader.upload_files local, hdfs, files
         system "#{streaming_statement cmd, hdfs, files}"
       else
         raise InvalidCommandError, "Invalid command: #{cmd.split(/\s+/)[0]}."
