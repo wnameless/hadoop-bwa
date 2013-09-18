@@ -13,20 +13,15 @@ module Hadoop::Bwa
     # Returns required files for a BWA command after parsing arguments.
     #
     # @return [Array] an Array of required files
-    def parse_args(cmd)
+    def parse_args cmd
       args = cmd.strip.split(/\s+/)
-      files = args.slice_before { |co| co =~ /^-/ }.to_a.last.delete_if { |co| co =~ /^-/ }
-      cmd = args.first
+      cmd = args.shift
       if cmd !~ %r{#{CMD_FORMAT.keys.map { |c| "^#{c}$" }.join '|'}}
         raise InvalidCommandError, "Invalid command: #{cmd}."
       end
-      files.delete cmd
-      while CMD_FORMAT[cmd].max < files.size
-        files.shift
-      end
-      if cmd == 'mem'
-        files.keep_if { |file| file =~ /^\w+(\.\w+)+$/ }
-      end
+      files = args.slice_before { |co| co =~ /^-/ }.to_a.last.delete_if { |co| co =~ /^-/ }
+      files.shift while CMD_FORMAT[cmd].max < files.size
+      files.keep_if { |file| file =~ /^\w+(\.\w+)+$/ } if cmd == 'mem'
       unless CMD_FORMAT[cmd].include? files.size
         raise RequiredFilesMissingError,
           "Required #{CMD_FORMAT[cmd].join ' or '} file(s), " <<

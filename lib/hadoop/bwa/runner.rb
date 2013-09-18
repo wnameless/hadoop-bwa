@@ -62,18 +62,24 @@ module Hadoop::Bwa
     # @param [String] hdfs the folder where HDFS files should be found
     # @param [Array] files an Array contains all names of required files
     def streaming_statement cmd, hdfs, files
-      "#{@hadoop_cmd} jar #{@streaming_jar} " <<
+      puts 'Streaming statement:'
+      stmt = "#{@hadoop_cmd} jar #{@streaming_jar} " <<
       "-files #{files.map { |f| "#{File.join @fs_default_name, hdfs, f}" }.join ','} " <<
       "-input #{File.join @fs_default_name, hdfs, 'hadoop-bwa-streaming-input.txt'} " <<
       "-output \"#{File.join hdfs, 'hadoop-bwa-' + cmd.split(/\s+/)[0] + '_' + Time.now.to_s.split(/\s+/).first(2).join.chars.keep_if { |c| c=~ /\d/ }.join}\" " <<
       "-mapper \"#{@bwa} #{cmd}\" " <<
       "-reducer NONE"
+      puts stmt
+      stmt
     end
     
     private
     
     def streaming cmd, local, hdfs, files
-      case cmd.split(/\s+/)[0]
+      bwa_cmd = cmd.split(/\s+/)[0]
+      puts "Execuating BWA #{bwa_cmd}, required files: #{files}"
+      puts "Preparing for Hadoop Streaming..."
+      case bwa_cmd
       when 'index'
         `#{@bwa} #{cmd}`
         exts = %w(amb ann bwt pac rbwt rpac rsa sa)

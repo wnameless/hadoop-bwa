@@ -27,15 +27,19 @@ module Hadoop::Bwa
           "Files: #{unuploaded_files - local_files} " <<
           "can't be found on either local or hdfs."
       end
+      (files - (files - remote_files)).each { |f| puts "File: #{f} existed on HDFS."  }
       upload_hdfs hdfs, unuploaded_files.map { |f| File.join local, f }
     end
     
     private
     
     def upload_hdfs hdfs, files
+      puts 'Uploading files to HDFS...'
       files.each do |f|
+        puts "Uploading file: #{f}"
         system "#{@hadoop_cmd} fs -put #{f} #{File.join hdfs, File.basename(f)}"
       end
+      puts 'Done.'
     end
     
     def ls_remote hdfs
