@@ -9,8 +9,12 @@ module Hadoop::Bwa
   # @author Wei-Ming Wu
   class Runner
     # BWA_PREREQUISITE defines necessary files for BWA commands.
-    BWA_PREREQUISITE = { index: [],   mem: [], aln: ['bwt', 'rbwt'],
-                         samse: [], sampe: [], bwasw: [] }.with_indifferent_access
+    # BWA -VERSION 0.5.9 no bwa mem options.
+    BWA_PREREQUISITE = { index: [],   mem: [], 
+                         aln: ['bwt', 'rbwt'],
+                         samse: ['ann','amb','pac','bwt','rbwt','sa','rsa'], 
+                         sampe: ['ann','amb','pac','bwt','rbwt','sa','rsa'],
+                         bwasw: ['ann','amb','pac','bwt','rbwt','sa','rsa'] }.with_indifferent_access
     include StreamingConfigurator
     include ArgsParser
     include Errors
@@ -80,11 +84,14 @@ module Hadoop::Bwa
         @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['aln'].map { |ext| "#{files[0]}.#{ext}" }
         system "#{streaming_statement cmd, hdfs, files}"
       when 'samse'
-        raise NotSupportedError, 'aln not supported yet.'
+        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['samse'].map { |ext| "#{files[0]}.#{ext}" }
+        system "#{streaming_statement cmd, hdfs, files}"
       when 'sampe'
-        raise NotSupportedError, 'sampe not supported yet.'
+        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['sampe'].map { |ext| "#{files[0]}.#{ext}" }
+        system "#{streaming_statement cmd, hdfs, files}"
       when 'bwasw'
-        raise NotSupportedError, 'bwasw not supported yet.'
+        @uploader.upload_files local, hdfs, files + BWA_PREREQUISITE['bwasw'].map { |ext| "#{files[0]}.#{ext}" }
+        system "#{streaming_statement cmd, hdfs, files}"
       else
         raise InvalidCommandError, "Invalid command: #{cmd.split(/\s+/)[0]}."
       end
