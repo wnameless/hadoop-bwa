@@ -6,7 +6,7 @@ module Hadoop::Bwa
   # @author Wei-Ming Wu
   module ArgsParser
     # CMD_FORMAT defines the number of required files for each BWA command.
-    CMD_FORMAT = { index: [3],   mem: [2, 3],   aln: [2],
+    CMD_FORMAT = { index: [1],   mem: [2, 3],   aln: [2],
                    samse: [3], sampe: [5],    bwasw: [2] }.with_indifferent_access
     include Errors
     
